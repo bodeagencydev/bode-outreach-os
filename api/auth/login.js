@@ -1,0 +1,1 @@
+const {setSession}=require("../_lib/auth");module.exports=async(req,res)=>{if(req.method!=="POST")return res.status(405).json({error:"Method not allowed"});let body=req.body||{};if(body.key!==process.env.BODE_ACCESS_KEY)return res.status(401).json({error:"Invalid access key"});setSession(res);res.status(200).json({ok:true})}
