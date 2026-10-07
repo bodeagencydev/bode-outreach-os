@@ -1,0 +1,1 @@
+create table if not exists bode_accounts(id uuid primary key,email text unique not null,refresh_token text not null,enabled boolean not null default true,created_at timestamptz not null default now());alter table bode_accounts enable row level security;
