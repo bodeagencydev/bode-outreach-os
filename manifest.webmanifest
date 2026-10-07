@@ -1,0 +1,10 @@
+{
+  "name": "Bode Outreach OS",
+  "short_name": "Bode OS",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090b0d",
+  "theme_color": "#090b0d",
+  "description": "Bode outreach workspace",
+  "icons": []
+}
