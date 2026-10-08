@@ -1,109 +1,112 @@
 const crypto = require("crypto");
-const { validSession } = require("../_lib/auth");
+const { requireSupabaseUser } = require("../_lib/auth");
 
-function dec(v) {
-  const key = Buffer.from(process.env.BODE_ENCRYPTION_KEY, "hex");
-  const b = Buffer.from(v, "base64url");
-  const iv = b.subarray(0, 12);
-  const tag = b.subarray(12, 28);
-  const data = b.subarray(28);
-  const d = crypto.createDecipheriv("aes-256-gcm", key, iv);
-  d.setAuthTag(tag);
-  return Buffer.concat([d.update(data), d.final()]).toString("utf8");
+function decryptToken(value) {
+  const key = Buffer.from(process.env.BODE_ENCRYPTION_KEY || "", "hex");
+  if (key.length !== 32) throw new Error("BODE_ENCRYPTION_KEY is not configured correctly");
+  const buffer = Buffer.from(value, "base64url");
+  const iv = buffer.subarray(0, 12);
+  const tag = buffer.subarray(12, 28);
+  const encrypted = buffer.subarray(28);
+  const decipher = crypto.createDecipheriv("aes-256-gcm", key, iv);
+  decipher.setAuthTag(tag);
+  return Buffer.concat([decipher.update(encrypted), decipher.final()]).toString("utf8");
 }
 
-async function token(refresh) {
-  const r = await fetch("https://oauth2.googleapis.com/token", {
+async function getAccessToken(refreshToken) {
+  const response = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       client_id: process.env.GOOGLE_CLIENT_ID,
       client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      refresh_token: refresh,
-      grant_type: "refresh_token",
-    }),
+      refresh_token: refreshToken,
+      grant_type: "refresh_token"
+    })
   });
-  return r.json();
+  const data = await response.json();
+  return response.ok ? data : null;
 }
 
-function b64(s) {
-  return Buffer.from(s).toString("base64url");
+function base64url(value) {
+  return Buffer.from(value).toString("base64url");
 }
 
 module.exports = async (req, res) => {
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  const user = await requireSupabaseUser(req, res);
+  if (!user) return;
+
   try {
-    const session = validSession(req);
-    if (!session) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-
-    if (req.method !== "POST") {
-      return res.status(405).json({ error: "Method not allowed" });
-    }
-
     const { account_id, to, subject, body } = req.body || {};
-    if (!account_id || !to || !subject || !body) {
-      return res.status(400).json({ error: "Missing fields" });
+    const recipient = String(to || "").trim();
+    const cleanSubject = String(subject || "").replace(/[\\r\\n]+/g, " ").trim();
+    const messageBody = String(body || "").trim();
+    if (!account_id || !recipient || !cleanSubject || !messageBody) {
+      return res.status(400).json({ error: "Account, recipient, subject, and message are required." });
+    }
+    if (!/^[^\\s@<>]+@[^\\s@<>]+\\.[^\\s@<>]+$/.test(recipient)) {
+      return res.status(400).json({ error: "Enter a valid recipient email address." });
+    }
+    if (cleanSubject.length > 240 || messageBody.length > 20000) {
+      return res.status(400).json({ error: "Subject or message is too long." });
     }
 
-    // Get the Gmail account from the new table
-    const q = await fetch(
-      process.env.SUPABASE_URL +
-        "/rest/v1/gmail_accounts?id=eq." +
-        encodeURIComponent(account_id) +
-        "&select=id,email,refresh_token,enabled",
-      {
-        headers: {
-          apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
-          Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY,
-        },
+    const accountUrl = process.env.SUPABASE_URL.replace(/\\/$/, "") +
+      "/rest/v1/gmail_accounts?id=eq." + encodeURIComponent(account_id) +
+      "&user_id=eq." + encodeURIComponent(user.id) +
+      "&select=id,email,refresh_token,enabled";
+    const accountResponse = await fetch(accountUrl, {
+      headers: {
+        apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+        Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY
       }
-    );
+    });
+    if (!accountResponse.ok) return res.status(502).json({ error: "Could not verify the selected Gmail account." });
+    const rows = await accountResponse.json();
+    const account = rows[0];
+    if (!account || !account.enabled) return res.status(404).json({ error: "That Gmail account is not available in your workspace." });
 
-    const rows = await q.json();
-    if (!rows[0] || !rows[0].enabled) {
-      return res.status(404).json({ error: "Account not available" });
-    }
-
-    const tr = await token(dec(rows[0].refresh_token));
-    if (!tr.access_token) {
-      return res.status(502).json({ error: "Could not refresh Gmail access" });
+    const token = await getAccessToken(decryptToken(account.refresh_token));
+    if (!token || !token.access_token) {
+      return res.status(502).json({ error: "Could not refresh Gmail access. Reconnect the Gmail account." });
     }
 
     const raw = [
-      `From: ${rows[0].email}`,
-      `To: ${to}`,
-      `Subject: ${subject}`,
+      "From: " + account.email,
+      "To: " + recipient,
+      "Subject: " + cleanSubject,
       "Content-Type: text/plain; charset=utf-8",
       "",
-      body,
-    ].join("\r\n");
+      messageBody
+    ].join("\\r\\n");
 
-    const g = await fetch(
-      "https://gmail.googleapis.com/gmail/v1/users/me/drafts",
-      {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + tr.access_token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: { raw: b64(raw) },
-        }),
-      }
-    );
-
-    const data = await g.json();
-    if (!g.ok) {
-      return res.status(g.status).json(data);
-    }
-
-    res.status(200).json({
-      ok: true,
-      draftId: data.id,
-      account: rows[0].email,
+    const gmailResponse = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/drafts", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token.access_token,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: { raw: base64url(raw) } })
     });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
+    const data = await gmailResponse.json();
+    if (!gmailResponse.ok) return res.status(gmailResponse.status).json({ error: "Gmail could not create the draft.", details: data.error?.message });
+
+    const patchUrl = process.env.SUPABASE_URL.replace(/\\/$/, "") +
+      "/rest/v1/gmail_accounts?id=eq." + encodeURIComponent(account.id) +
+      "&user_id=eq." + encodeURIComponent(user.id);
+    await fetch(patchUrl, {
+      method: "PATCH",
+      headers: {
+        apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+        Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY,
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({ last_used_at: new Date().toISOString() })
+    });
+
+    return res.status(200).json({ ok: true, draftId: data.id, account: account.email });
+  } catch (error) {
+    return res.status(500).json({ error: "Could not create the Gmail draft.", details: String(error.message || "").slice(0, 160) });
   }
 };
