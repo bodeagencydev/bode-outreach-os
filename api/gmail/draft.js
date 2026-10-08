@@ -45,7 +45,7 @@ module.exports = async (req, res) => {
     if (!account_id || !recipient || !cleanSubject || !messageBody) {
       return res.status(400).json({ error: "Account, recipient, subject, and message are required." });
     }
-    if (!/^[^\\s@<>]+@[^\\s@<>]+\\.[^\\s@<>]+$/.test(recipient)) {
+    if (recipient.includes(" ") || recipient.includes(String.fromCharCode(9)) || recipient.includes("<") || recipient.includes(">") || recipient.split("@").length !== 2 || !recipient.split("@")[1].includes(".")) {
       return res.status(400).json({ error: "Enter a valid recipient email address." });
     }
     if (cleanSubject.length > 240 || messageBody.length > 20000) {
