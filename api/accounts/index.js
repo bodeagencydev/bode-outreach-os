@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
   if (!user) return;
 
   try {
-    const url = process.env.SUPABASE_URL.replace(/\\/$/, "") +
+    const url = process.env.SUPABASE_URL.replace(/\/$/, "") +
       "/rest/v1/gmail_accounts?select=id,email,enabled,created_at,last_used_at&user_id=eq." +
       encodeURIComponent(user.id) + "&order=created_at.asc";
     const response = await fetch(url, {
