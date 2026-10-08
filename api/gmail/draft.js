@@ -40,7 +40,7 @@ module.exports = async (req, res) => {
   try {
     const { account_id, to, subject, body } = req.body || {};
     const recipient = String(to || "").trim();
-    const cleanSubject = String(subject || "").replace(/[\\r\\n]+/g, " ").trim();
+    const cleanSubject = String(subject || "").split(String.fromCharCode(13)).join(" ").split(String.fromCharCode(10)).join(" ").trim();
     const messageBody = String(body || "").trim();
     if (!account_id || !recipient || !cleanSubject || !messageBody) {
       return res.status(400).json({ error: "Account, recipient, subject, and message are required." });
