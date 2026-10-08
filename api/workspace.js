@@ -1,6 +1,6 @@
 const { requireSupabaseUser } = require("./_lib/auth");
 
-const TABLE_URL = () => process.env.SUPABASE_URL.replace(/\\/$/, "") + "/rest/v1/workspace_state";
+const TABLE_URL = () => process.env.SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/workspace_state";
 const serverHeaders = () => ({
   apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
   Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY,
