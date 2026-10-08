@@ -47,12 +47,12 @@ function setSession(res, userId = "temp") {
 
 async function getSupabaseUser(req) {
   const auth = req.headers.authorization || "";
-  const match = auth.match(/^Bearer\\s+(.+)$/i);
+  const match = auth.match(/^Bearer\s+(.+)$/i);
   if (!match) return null;
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
     throw new Error("Supabase server configuration is incomplete");
   }
-  const response = await fetch(process.env.SUPABASE_URL.replace(/\\/$/, "") + "/auth/v1/user", {
+  const response = await fetch(process.env.SUPABASE_URL.replace(/\/$/, "") + "/auth/v1/user", {
     headers: {
       apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
       Authorization: "Bearer " + match[1]
