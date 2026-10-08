@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: "Subject or message is too long." });
     }
 
-    const accountUrl = process.env.SUPABASE_URL.replace(/\\/$/, "") +
+    const accountUrl = process.env.SUPABASE_URL.replace(/\/$/, "") +
       "/rest/v1/gmail_accounts?id=eq." + encodeURIComponent(account_id) +
       "&user_id=eq." + encodeURIComponent(user.id) +
       "&select=id,email,refresh_token,enabled";
@@ -92,7 +92,7 @@ module.exports = async (req, res) => {
     const data = await gmailResponse.json();
     if (!gmailResponse.ok) return res.status(gmailResponse.status).json({ error: "Gmail could not create the draft.", details: data.error?.message });
 
-    const patchUrl = process.env.SUPABASE_URL.replace(/\\/$/, "") +
+    const patchUrl = process.env.SUPABASE_URL.replace(/\/$/, "") +
       "/rest/v1/gmail_accounts?id=eq." + encodeURIComponent(account.id) +
       "&user_id=eq." + encodeURIComponent(user.id);
     await fetch(patchUrl, {
