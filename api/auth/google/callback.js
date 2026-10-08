@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
     });
     if (!profile.email) throw new Error("Google did not return an email address.");
 
-    const base = process.env.SUPABASE_URL.replace(/\\/$/, "") + "/rest/v1/gmail_accounts";
+    const base = process.env.SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/gmail_accounts";
     const headers = {
       apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
       Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY,
