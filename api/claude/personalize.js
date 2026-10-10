@@ -41,7 +41,7 @@ module.exports = async (req, res) => {
         "anthropic-version": "2023-06-01"
       },
       body: JSON.stringify({
-        model: process.env.CLAUDE_MODEL || "claude-3-5-haiku-latest",
+        model: process.env.CLAUDE_MODEL || "claude-haiku-5-5",
         max_tokens: Math.min(12000, 700 + leads.length * 420),
         messages: [{ role: "user", content: prompt }]
       })
