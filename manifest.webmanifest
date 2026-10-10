@@ -5,6 +5,13 @@
   "display": "standalone",
   "background_color": "#090b0d",
   "theme_color": "#090b0d",
-  "description": "Bode outreach workspace",
-  "icons": []
+  "description": "A focused workspace for leads, personalized outreach, campaign preparation, and Gmail drafts.",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
 }
