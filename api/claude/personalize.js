@@ -4,8 +4,8 @@ module.exports = async (req, res) => {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
   const user = await requireSupabaseUser(req, res);
   if (!user) return;
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return res.status(503).json({ error: "Claude personalization is not configured yet. Add ANTHROPIC_API_KEY to Vercel Environment Variables." });
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: "Gemini personalization is not configured yet. Add GEMINI_API_KEY to Vercel Environment Variables." });
 
   try {
     const input = req.body || {};
@@ -33,32 +33,31 @@ module.exports = async (req, res) => {
       "Leads JSON:\n" + JSON.stringify(safeLeads)
     ].join("\n\n");
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}", {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01"
-      },
+      headers: { "content-type": "application/json" },
       body: JSON.stringify({
-        model: process.env.CLAUDE_MODEL || "claude-haiku-5-5",
-        max_tokens: Math.min(12000, 700 + leads.length * 420),
-        messages: [{ role: "user", content: prompt }]
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.6,
+          maxOutputTokens: Math.min(12000, 700 + leads.length * 420),
+          responseMimeType: "application/json"
+        }
       })
     });
     const data = await response.json();
-    if (!response.ok) return res.status(502).json({ error: data.error?.message || "Claude could not personalize this campaign." });
-    const raw = (data.content || []).filter(x => x.type === "text").map(x => x.text).join("\n").replace(/^```json\s*/i, "").replace(/\s*```$/, "");
+    if (!response.ok) return res.status(502).json({ error: data.error?.message || "Gemini could not personalize this campaign." });
+    const raw = (data.candidates?.[0]?.content?.parts || []).map(x => x.text || "").join("\n").replace(/^\`\`\`json\s*/i, "").replace(/\s*\`\`\`$/, "");
     let parsed;
-    try { parsed = JSON.parse(raw); } catch { return res.status(502).json({ error: "Claude returned an unreadable response. Try a smaller batch." }); }
-    if (!Array.isArray(parsed.emails)) return res.status(502).json({ error: "Claude's response did not contain an email list." });
+    try { parsed = JSON.parse(raw); } catch { return res.status(502).json({ error: "Gemini returned an unreadable response. Try a smaller batch." }); }
+    if (!Array.isArray(parsed.emails)) return res.status(502).json({ error: "Gemini's response did not contain an email list." });
     const expected = new Set(safeLeads.map(x => x.id));
     const emails = parsed.emails.filter(x => expected.has(String(x.id))).map(x => ({
       id: String(x.id),
       subject: String(x.subject || "").trim().slice(0, 160),
       body: String(x.body || "").trim().slice(0, 1800)
     })).filter(x => x.subject && x.body);
-    if (emails.length !== safeLeads.length) return res.status(502).json({ error: "Claude did not return a complete set of messages. Retry with fewer leads." });
+    if (emails.length !== safeLeads.length) return res.status(502).json({ error: "Gemini did not return a complete set of messages. Retry with fewer leads." });
     return res.status(200).json({ emails });
   } catch (error) {
     return res.status(500).json({ error: "Could not personalize this campaign." });
