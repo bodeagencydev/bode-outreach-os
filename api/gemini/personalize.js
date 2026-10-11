@@ -58,8 +58,8 @@ module.exports = async (req, res) => {
     const expected = new Set(safeLeads.map(x => x.id));
     const emails = parsed.emails.filter(x => expected.has(String(x.id))).map(x => ({
       id: String(x.id),
-      subject: String(x.subject || "").trim().slice(0, 160),
-      body: String(x.body || "").trim().slice(0, 1800)
+      subject: String(x.subject || "").replace(/[—–]/g, "-").trim().slice(0, 160),
+      body: String(x.body || "").replace(/[—–]/g, "-").trim().slice(0, 1800)
     })).filter(x => x.subject && x.body);
     if (emails.length !== safeLeads.length) return res.status(502).json({ error: "Gemini did not return a complete set of messages. Retry with fewer leads." });
     return res.status(200).json({ emails });
