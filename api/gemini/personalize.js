@@ -10,6 +10,7 @@ module.exports = async (req, res) => {
   try {
     const input = req.body || {};
     const instruction = String(input.instruction || "").trim().slice(0, 5000);
+    const messageRules = String(input.messageRules || "").trim().slice(0, 3000);
     const leads = Array.isArray(input.leads) ? input.leads.slice(0, 25) : [];
     if (!instruction) return res.status(400).json({ error: "Describe the campaign goal, subject style, and message you want." });
     if (!leads.length) return res.status(400).json({ error: "Select at least one lead to personalize." });
@@ -28,6 +29,7 @@ module.exports = async (req, res) => {
       "Never invent audits, facts, prior relationships, results, or observations. If details are missing, write cautiously and do not pretend they are known.",
       "Sound like a real person: friendly, natural, direct, and not overly formal or salesy. Keep the message short unless the user requests more detail.",
       "Never use em dashes (—). Use commas, periods, or simple hyphens instead.",
+      "Additional saved writing rules from the user, which must preserve truthfulness and the campaign purpose:\n" + (messageRules || "No extra rules supplied."),
       "Preserve the user-provided subject and message purpose. Personalize only with relevant lead facts and light wording adjustments. Do not add new questions, offers, buying intent, promises, or requests the user did not ask for.",
       "For example, if the user asks whether a store ships to the US, ask only about US shipping. Do not add that the sender wants to purchase unless explicitly included in the brief.",
       "Do not assume the sender is Bode Conversion Lab. The sender may be any individual, store, team, or organization. Use a brand name only if the user explicitly supplies it.",
