@@ -21,7 +21,8 @@ module.exports = async (req, res) => {
       first_name: String(l.name || "").slice(0, 120),
       company: String(l.company || "").slice(0, 200),
       website: String(l.website || "").slice(0, 500),
-      observation: String(l.observation || "").slice(0, 1200)
+      observation: String(l.observation || "").slice(0, 1200),
+      message_body: String(l.messageBody || l.observation || "").slice(0, 1800)
     }));
     const prompt = [
       "You write truthful, relevant, individually tailored business outreach emails.",
@@ -31,6 +32,7 @@ module.exports = async (req, res) => {
       "Never use em dashes (—). Use commas, periods, or simple hyphens instead.",
       "Additional saved writing rules from the user, which must preserve truthfulness and the campaign purpose:\n" + (messageRules || "No extra rules supplied."),
       "Preserve the user-provided subject and message purpose. Personalize only with relevant lead facts and light wording adjustments. Do not add new questions, offers, buying intent, promises, or requests the user did not ask for.",
+      "If a lead includes message_body, treat it as the starting message for that contact and preserve its purpose. Use the campaign brief to guide the requested goal and tone; do not replace the lead-specific body with unrelated copy.",
       "For example, if the user asks whether a store ships to the US, ask only about US shipping. Do not add that the sender wants to purchase unless explicitly included in the brief.",
       "Do not assume the sender is Bode Conversion Lab. The sender may be any individual, store, team, or organization. Use a brand name only if the user explicitly supplies it.",
       "Return ONLY valid JSON in this exact shape: {\"emails\":[{\"id\":string,\"subject\":string,\"body\":string}]}",
