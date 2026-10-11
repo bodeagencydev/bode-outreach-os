@@ -69,7 +69,7 @@ module.exports = async (req, res) => {
     const raw = [
       "From: " + account.email,
       "To: " + recipient,
-      "Subject: " + cleanSubject.replace(/[^\x20-\x7E]/g, ""),
+      "Subject: " + (/[^\x20-\x7E]/.test(cleanSubject) ? "=?UTF-8?B?" + Buffer.from(cleanSubject, "utf8").toString("base64") + "?=" : cleanSubject),
       "MIME-Version: 1.0",
       "Content-Type: text/plain; charset=UTF-8",
       "Content-Transfer-Encoding: 8bit",
