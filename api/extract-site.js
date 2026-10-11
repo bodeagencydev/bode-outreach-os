@@ -9,15 +9,14 @@ function isPublicAddress(ip) {
       (p[0] === 169 && p[1] === 254) ||
       (p[0] === 172 && p[1] >= 16 && p[1] <= 31) ||
       (p[0] === 192 && p[1] === 168) ||
-      (p[0] >= 224) || (p[0] === 100 && p[1] >= 64 && p[1] <= 127));
+      p[0] >= 224 || (p[0] === 100 && p[1] >= 64 && p[1] <= 127));
   }
   if (net.isIPv6(ip)) {
     const x = ip.toLowerCase();
-    return x === "::1" ? false :
-      !(x === "::" || x.startsWith("fc") || x.startsWith("fd") ||
-        /^fe[89ab]/.test(x) || x.startsWith("ff") ||
-        x.startsWith("::ffff:127.") || x.startsWith("::ffff:10.") ||
-        x.startsWith("::ffff:192.168.") || x.startsWith("::ffff:169.254."));
+    return !(x === "::" || x === "::1" || x.startsWith("fc") || x.startsWith("fd") ||
+      /^fe[89ab]/.test(x) || x.startsWith("ff") || x.startsWith("::ffff:127.") ||
+      x.startsWith("::ffff:10.") || x.startsWith("::ffff:192.168.") ||
+      x.startsWith("::ffff:169.254."));
   }
   return false;
 }
@@ -35,13 +34,55 @@ async function validatePublicUrl(value) {
   if (!records.length || records.some(record => !isPublicAddress(record.address))) {
     throw new Error("This website does not resolve to a publicly accessible address.");
   }
+  url.hash = "";
   return url;
+}
+
+async function fetchHtml(value) {
+  let current = await validatePublicUrl(value);
+  let response;
+  for (let redirects = 0; redirects <= 3; redirects++) {
+    response = await fetch(current.href, {
+      redirect: "manual",
+      signal: AbortSignal.timeout(5000),
+      headers: { "User-Agent": "OutreachOS-ContactFinder/1.0", "Accept": "text/html, text/plain;q=0.8" }
+    });
+    if ([301, 302, 303, 307, 308].includes(response.status)) {
+      if (redirects === 3) throw new Error("The website redirected too many times.");
+      const location = response.headers.get("location");
+      if (!location) throw new Error("The website returned an invalid redirect.");
+      current = await validatePublicUrl(new URL(location, current).href);
+      continue;
+    }
+    break;
+  }
+  if (!response?.ok) throw new Error("The website returned HTTP " + (response?.status || "error") + ".");
+  const type = (response.headers.get("content-type") || "").toLowerCase();
+  if (!(type.includes("text/html") || type.includes("text/plain") || type.includes("application/xhtml"))) {
+    throw new Error("The URL did not return a readable web page.");
+  }
+  const length = Number(response.headers.get("content-length") || 0);
+  if (length > 1200000) throw new Error("The web page is too large to scan.");
+  return { url: current, html: (await response.text()).slice(0, 1200000) };
 }
 
 function decodeEntities(value) {
   return value.replace(/&commat;|&#64;|&#x40;/gi, "@")
     .replace(/&period;|&#46;|&#x2e;/gi, ".")
-    .replace(/&nbsp;/gi, " ");
+    .replace(/&amp;/gi, "&").replace(/&nbsp;/gi, " ");
+}
+
+function extractEmails(html) {
+  const text = decodeEntities(html)
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ");
+  const found = new Set();
+  for (const match of text.matchAll(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)) {
+    const email = match[0].replace(/[),.;:'"<>]+$/g, "").toLowerCase();
+    if (email.length <= 254 && !/\.(png|jpe?g|gif|svg|webp|css|js)$/i.test(email)) found.add(email);
+    if (found.size >= 200) break;
+  }
+  return found;
 }
 
 module.exports = async (req, res) => {
@@ -50,44 +91,38 @@ module.exports = async (req, res) => {
   if (!user) return;
 
   try {
-    let current = await validatePublicUrl(String(req.body?.url || "").trim());
-    let response;
-    for (let redirects = 0; redirects <= 3; redirects++) {
-      response = await fetch(current.href, {
-        redirect: "manual",
-        signal: AbortSignal.timeout(8000),
-        headers: { "User-Agent": "OutreachOS-ContactFinder/1.0", "Accept": "text/html, text/plain;q=0.8" }
-      });
-      if ([301, 302, 303, 307, 308].includes(response.status)) {
-        if (redirects === 3) return res.status(422).json({ error: "The website redirected too many times." });
-        const location = response.headers.get("location");
-        if (!location) return res.status(422).json({ error: "The website returned an invalid redirect." });
-        current = await validatePublicUrl(new URL(location, current).href);
-        continue;
-      }
-      break;
+    const first = await fetchHtml(String(req.body?.url || "").trim());
+    const pages = [{ url: first.url, html: first.html }];
+    const seen = new Set([first.url.href]);
+    const origin = first.url.origin;
+    const links = [];
+    for (const match of first.html.matchAll(/href\s*=\s*["']([^"'<>]+)["']/gi)) {
+      try {
+        const link = new URL(decodeEntities(match[1]), first.url);
+        if (link.origin !== origin || !["http:", "https:"].includes(link.protocol)) continue;
+        if (!/(contact|about|team|staff|support|company|connect|imprint|customer-service|help)/i.test(link.pathname)) continue;
+        link.hash = "";
+        link.search = "";
+        if (!seen.has(link.href)) { seen.add(link.href); links.push(link.href); }
+      } catch {}
+      if (links.length >= 3) break;
     }
-    if (!response?.ok) return res.status(422).json({ error: "The website could not be read. It may block automated requests.", status: response?.status });
-    const type = (response.headers.get("content-type") || "").toLowerCase();
-    if (!(type.includes("text/html") || type.includes("text/plain") || type.includes("application/xhtml"))) {
-      return res.status(415).json({ error: "That URL did not return a readable web page." });
+    const extra = await Promise.allSettled(links.map(url => fetchHtml(url)));
+    for (const result of extra) if (result.status === "fulfilled") pages.push(result.value);
+
+    const emails = new Set();
+    for (const page of pages) for (const email of extractEmails(page.html)) {
+      emails.add(email);
+      if (emails.size >= 200) break;
     }
-    const length = Number(response.headers.get("content-length") || 0);
-    if (length > 1500000) return res.status(413).json({ error: "This page is too large to scan." });
-    const html = decodeEntities((await response.text()).slice(0, 1500000));
-    const found = new Set();
-    for (const match of html.matchAll(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)) {
-      const email = match[0].replace(/[),.;:'"<>]+$/g, "").toLowerCase();
-      if (email.length <= 254 && !/\.(png|jpe?g|gif|svg|webp|css|js)$/i.test(email)) found.add(email);
-      if (found.size >= 200) break;
-    }
-    const emails = [...found];
     return res.status(200).json({
       ok: true,
-      url: current.origin,
-      emails,
+      url: first.url.origin,
+      emails: [...emails],
+      pagesScanned: pages.length,
       scannedAt: new Date().toISOString(),
-      note: emails.length ? "" : "No email addresses were visible in the page HTML. Try the Contact or About page URL."
+      note: emails.size ? "Scanned the supplied page and up to three relevant contact/about pages." :
+        "No email addresses were visible in the scanned pages. The website may hide addresses or block automated requests."
     });
   } catch (error) {
     const message = String(error?.message || "");
