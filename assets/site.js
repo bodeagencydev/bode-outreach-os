@@ -135,16 +135,13 @@ document.addEventListener('DOMContentLoaded',()=>{
    el.style.setProperty('--reveal-delay',((i%4)*75)+'ms');
    if(el.matches('.service-card,.showcase-card,.project-card,.contact-card,.choice-card,.style-card,.service-detail,.brief-panel,.brief-card')){
      el.classList.add('site-motion-card');
-     el.dataset.revealStyle=i%2?'rise-right':'rise-left';
+     el.dataset.revealStyle=['drop','pop','rise-left','rise-right','tilt','flip'][i%6];
    }
  });
  const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
    if(entry.isIntersecting){
      entry.target.classList.add('is-in-view');
      if(entry.target.matches('main > section,main > .hero,main > .page-hero,main > .brief-hero,main > .brief-section,main > .brief-bottom'))entry.target.classList.add('site-section-active');
-   }else if(entry.boundingClientRect.top>window.innerHeight*.3){
-     entry.target.classList.remove('is-in-view');
-     entry.target.classList.remove('site-section-active');
    }
  }),{threshold:.12,rootMargin:'0px 0px -8% 0px'});
  document.querySelectorAll('[data-scroll-reveal],main > section,main > .hero,main > .page-hero,main > .brief-hero,main > .brief-section,main > .brief-bottom').forEach(el=>revealObserver.observe(el));
