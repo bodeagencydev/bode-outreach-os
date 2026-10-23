@@ -74,3 +74,9 @@ document.addEventListener('DOMContentLoaded',()=>{
 ].join('\n');const mail='mailto:bodeagencyofficial@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);document.getElementById('brief-email-link').href=mail;panels.forEach(p=>p.hidden=true);result.hidden=false;result.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});});
  document.getElementById('edit-brief')?.addEventListener('click',()=>{result.hidden=true;panels.forEach(p=>p.hidden=false);show(3);});
 });
+
+
+/* Discourage casual saving of portfolio video; this is not DRM. */
+document.addEventListener('contextmenu',event=>{
+  if(event.target instanceof HTMLVideoElement) event.preventDefault();
+});
