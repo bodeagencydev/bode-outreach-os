@@ -80,3 +80,31 @@ document.addEventListener('DOMContentLoaded',()=>{
 document.addEventListener('contextmenu',event=>{
   if(event.target instanceof HTMLVideoElement) event.preventDefault();
 });
+
+
+/* Scroll-linked portfolio choreography. Each layer follows a distinct path as the stage crosses the viewport. */
+document.addEventListener('DOMContentLoaded',()=>{
+ const stage=document.querySelector('.portfolio-motion-stage');
+ if(!stage)return;
+ const canvas=stage.querySelector('.motion-canvas');
+ const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ let ticking=false;
+ function update(){
+   ticking=false;
+   const rect=stage.getBoundingClientRect();
+   const travel=Math.max(1,rect.height+window.innerHeight);
+   const progress=Math.max(0,Math.min(1,(window.innerHeight-rect.top)/travel));
+   canvas.style.setProperty('--stage-progress',progress.toFixed(3));
+   stage.style.setProperty('--stage-progress',progress.toFixed(3));
+   if(!reduced){
+     const drift=(progress-.5)*2;
+     stage.querySelector('.orbit-a').style.transform='translate(-50%,-50%) rotate('+(-24+drift*13)+'deg) scale('+(1+progress*.05)+')';
+     stage.querySelector('.orbit-b').style.transform='translate(-50%,-50%) rotate('+(48-drift*17)+'deg) scale('+(1+progress*.035)+')';
+   }
+ }
+ function requestUpdate(){if(!ticking){ticking=true;requestAnimationFrame(update)}}
+ update();
+ if(!reduced){window.addEventListener('scroll',requestUpdate,{passive:true});window.addEventListener('resize',requestUpdate,{passive:true})}
+ const details=document.querySelectorAll('.film-details');
+ details.forEach(d=>d.querySelector('summary')?.addEventListener('click',()=>{requestAnimationFrame(()=>{d.querySelector('.details-toggle').textContent=d.open?'−':'+'})}));
+});
