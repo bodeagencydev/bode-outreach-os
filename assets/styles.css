@@ -19,3 +19,22 @@
 .project-label{backdrop-filter:blur(12px)}
 .project-info{background:linear-gradient(145deg,#14171b,#0d0f12)}
 @media(max-width:680px){.hero-art>.hero-photo{object-position:center}.hero-art:after{font-size:.53rem;right:12px;bottom:12px}.art-card{background:#090a0dcc}.project-art{aspect-ratio:1.12}}
+
+.showcase-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.showcase-card{position:relative;min-height:340px;overflow:hidden;border:1px solid var(--line);border-radius:24px;background:var(--surface)}
+.showcase-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s;filter:saturate(.78)}
+.showcase-card:hover img{transform:scale(1.045)}
+.showcase-card:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,#090a0d10 42%,#090a0de8 100%)}
+.showcase-card>div{position:absolute;z-index:1;left:20px;right:20px;bottom:20px}
+.showcase-card span{color:var(--lime);font-size:.7rem;font-weight:700;letter-spacing:.15em}
+.showcase-card h3{font:600 1.45rem/1.1 'Space Grotesk';margin:9px 0 0;letter-spacing:-.04em}
+.about-panel{position:relative;overflow:hidden;isolation:isolate;min-height:390px}
+.about-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;opacity:.38}
+.about-panel:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(140deg,#11140bd9,#101217b5)}
+.about-panel .big-mark{ text-shadow:0 6px 36px #0008}
+.contact-banner{position:relative;min-height:260px;overflow:hidden;border-block:1px solid var(--line);background:#101217}
+.contact-banner>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.43;filter:saturate(.55)}
+.contact-banner:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#090a0df2,#090a0d9c 60%,#090a0d55)}
+.contact-banner-copy{position:relative;z-index:1;width:min(var(--max),calc(100% - 40px));margin:auto;padding:55px 0;max-width:1200px}
+.contact-banner-copy p{font:500 clamp(1.4rem,3vw,2.4rem)/1.2 'Space Grotesk';letter-spacing:-.04em;max-width:700px;margin:14px 0 0}
+@media(max-width:680px){.showcase-grid{grid-template-columns:1fr}.showcase-card{min-height:290px}.about-panel{min-height:340px}.contact-banner{min-height:230px}.contact-banner-copy{width:calc(100% - 32px);padding:42px 0}}
