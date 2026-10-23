@@ -48,3 +48,5 @@
 .project-art>img{z-index:0}
 .project-art:before{z-index:1}
 .project-label{z-index:2}
+
+.about-photo{z-index:0}.about-panel:after{z-index:1}.about-panel>*:not(.about-photo){position:relative;z-index:2}
