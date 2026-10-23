@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#090a0d"><meta name="description" content="Build your AI video or motion graphics brief with Bode AI Ad Lab.">
 <title>Build your creative | Bode AI Ad Lab</title>
-<link rel="icon" type="image/svg+xml" href="/app-icon.svg"><link rel="stylesheet" href="assets/styles.css"><script defer src="assets/site.js"></script>
+<link rel="icon" type="image/svg+xml" href="/app-icon.svg"><link rel="stylesheet" href="assets/styles.css"><link rel="stylesheet" href="assets/live-concept.css"><script defer src="assets/site.js"></script><script defer src="assets/live-concept.js"></script>
 </head>
 <body class="brief-page">
 <div class="topbar"><div class="container nav">
@@ -34,6 +34,15 @@
 <div class="brief-fields two-col"><label>Brand or business name<input name="brand" placeholder="Your brand name"></label><label>Website or social link <span class="optional">optional</span><input name="brandLink" type="url" placeholder="https://..."></label></div>
 <div class="brief-actions"><span class="brief-hint">You can change your answers later.</span><button class="button" type="button" data-next>Next: Visual direction <span>→</span></button></div></div>
 <div class="brief-panel" data-panel="2"><div class="brief-panel-head"><span>02 / THE FEELING</span><h2>How should it look and move?</h2><p>Choose a direction. We’ll use it as a starting point, not a creative cage.</p></div>
+<div class="live-concept" aria-label="Live visual concept preview">
+ <div class="live-concept-top"><span>LIVE CONCEPT PREVIEW</span><small>Updates as you choose</small></div>
+ <div class="live-concept-stage" id="live-concept-stage" data-style="Cinematic and realistic" data-deliverable="AI video ad" role="img" aria-label="Animated abstract visual preview of the selected creative direction">
+  <div class="live-concept-grid"></div><div class="live-concept-object"><b>▶</b></div>
+  <div class="live-concept-copy"><div><small id="live-concept-kind">AI VIDEO AD</small><strong id="live-concept-title">A cinematic first impression.</strong></div><em>CONCEPT<br>01 / 03</em></div>
+ </div>
+ <div class="live-concept-meta"><span>Visual style: <b id="live-concept-style">Cinematic and realistic</b></span><span>Motion: <b id="live-concept-motion">Movement direction appears as you choose</b></span></div>
+ <p class="live-concept-hint">This is a moving visual sketch of your direction, not the finished video. Your selections help us understand the creative you have in mind.</p>
+</div>
 <fieldset class="choice-field"><legend>Choose the visual style <i>Choose one</i></legend><div class="style-grid">
 <label class="style-card"><input type="radio" name="style" value="Cinematic and realistic" required><span class="style-swatch swatch-cinema"></span><strong>Cinematic</strong><small>Realistic, dramatic, film-like</small></label>
 <label class="style-card"><input type="radio" name="style" value="Bold motion graphics"><span class="style-swatch swatch-motion"></span><strong>Motion-led</strong><small>Graphics, typography, rhythm</small></label>
