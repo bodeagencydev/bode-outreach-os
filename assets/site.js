@@ -108,3 +108,76 @@ document.addEventListener('DOMContentLoaded',()=>{
  const details=document.querySelectorAll('.film-details');
  details.forEach(d=>d.querySelector('summary')?.addEventListener('click',()=>{requestAnimationFrame(()=>{d.querySelector('.details-toggle').textContent=d.open?'−':'+'})}));
 });
+
+
+/* Shared cinematic scroll engine: installed on every page that loads assets/site.js. */
+document.addEventListener('DOMContentLoaded',()=>{
+ const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const body=document.body;
+ body.classList.add('site-motion-ready');
+ const progress=document.createElement('div');
+ progress.id='site-scroll-progress';progress.setAttribute('aria-hidden','true');progress.innerHTML='<span></span>';body.appendChild(progress);
+ const index=document.createElement('div');
+ index.id='site-scroll-index';index.setAttribute('aria-hidden','true');index.innerHTML='<small>SCROLL</small><div class="scroll-index-track"><i></i></div><small class="scroll-index-value">00</small>';body.appendChild(index);
+ const orb=document.createElement('div');orb.className='site-ambient-orb';orb.setAttribute('aria-hidden','true');body.appendChild(orb);
+ const sections=[...document.querySelectorAll('main > section, main > .hero, main > .page-hero, main > .brief-hero, main > .brief-section, main > .brief-bottom')];
+ sections.forEach((el,i)=>{
+   if(!el.dataset.scrollMotion)el.dataset.scrollMotion='section';
+   if(!el.querySelector('.site-section-number') && el.offsetHeight>180){
+     const num=document.createElement('span');num.className='site-section-number';num.setAttribute('aria-hidden','true');num.innerHTML='<b>0'+(i+1).toString().slice(-1)+'</b> / '+String(sections.length).padStart(2,'0');el.appendChild(num);
+   }
+ });
+ const candidates=[...document.querySelectorAll('main h1, main h2, main .section-head, main .service-card, main .showcase-card, main .service-detail, main .project-card, main .contact-card, main .choice-card, main .style-card, main .callout, main .motion-feature, main .hero-art, main .brief-panel, main .brief-card')];
+ candidates.forEach((el,i)=>{
+   if(el.closest('details')||el.dataset.noScrollMotion==='true')return;
+   el.dataset.scrollReveal='';
+   el.dataset.scrollMotion='content';
+   el.style.setProperty('--reveal-delay',((i%4)*75)+'ms');
+   if(el.matches('.service-card,.showcase-card,.project-card,.contact-card,.choice-card,.style-card,.service-detail,.brief-panel,.brief-card')){
+     el.classList.add('site-motion-card');
+     el.dataset.revealStyle=i%2?'rise-right':'rise-left';
+   }
+ });
+ const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
+   if(entry.isIntersecting){
+     entry.target.classList.add('is-in-view');
+     if(entry.target.matches('main > section,main > .hero,main > .page-hero,main > .brief-hero,main > .brief-section,main > .brief-bottom'))entry.target.classList.add('site-section-active');
+   }else if(entry.boundingClientRect.top>window.innerHeight*.3){
+     entry.target.classList.remove('is-in-view');
+     entry.target.classList.remove('site-section-active');
+   }
+ }),{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+ document.querySelectorAll('[data-scroll-reveal],main > section,main > .hero,main > .page-hero,main > .brief-hero,main > .brief-section,main > .brief-bottom').forEach(el=>revealObserver.observe(el));
+ let busy=false;
+ function frame(){
+   busy=false;
+   const max=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+   const p=Math.max(0,Math.min(1,window.scrollY/max));
+   body.style.setProperty('--scroll-cinema',p.toFixed(4));
+   index.querySelector('.scroll-index-value').textContent=String(Math.round(p*100)).padStart(2,'0');
+   sections.forEach((el,i)=>{
+     const r=el.getBoundingClientRect();
+     const mid=(window.innerHeight-r.top)/(window.innerHeight+r.height);
+     const local=Math.max(-1,Math.min(1,(mid-.5)*2));
+     el.style.setProperty('--section-progress',local.toFixed(3));
+     const art=el.querySelector('.hero-art,.motion-feature,.showcase-card img,.about-grid img');
+     if(art&&!reduce)art.style.transform='translate3d(0,'+(local*-24)+'px,0) rotate('+(local*.8)+'deg)';
+   });
+ }
+ function schedule(){if(!busy){busy=true;requestAnimationFrame(frame)}}
+ frame();window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',schedule,{passive:true});
+ if(!reduce&&matchMedia('(hover:hover) and (pointer:fine)').matches){
+   let px=innerWidth/2,py=innerHeight/3,pt=null;
+   window.addEventListener('pointermove',e=>{
+     px=e.clientX;py=e.clientY;
+     body.style.setProperty('--pointer-x',px+'px');body.style.setProperty('--pointer-y',py+'px');
+     if(pt)return;pt=requestAnimationFrame(()=>{
+       document.querySelectorAll('.site-motion-card:hover').forEach(card=>{
+         const r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+         card.style.setProperty('--card-rx',(-y*8).toFixed(2)+'deg');card.style.setProperty('--card-ry',(x*9).toFixed(2)+'deg');
+       });pt=null;
+     });
+   },{passive:true});
+   document.querySelectorAll('.site-motion-card').forEach(card=>card.addEventListener('pointerleave',()=>{card.style.setProperty('--card-rx','0deg');card.style.setProperty('--card-ry','0deg')}));
+ }
+});
