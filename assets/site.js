@@ -64,8 +64,8 @@ document.addEventListener('DOMContentLoaded',()=>{
  function validatePanel(n){const panel=panels.find(p=>Number(p.dataset.panel)===n);for(const el of panel.querySelectorAll('input[required],textarea[required],select[required]')){if(!el.checkValidity()){el.reportValidity();el.focus();return false;}}return true;}
  form.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>{if(validatePanel(step))show(Math.min(3,step+1));}));
  form.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>show(Math.max(1,step-1))));
- form.addEventListener('submit',e=>{e.preventDefault();if(!validatePanel(3))return;const fd=new FormData(form),get=k=>(fd.get(k)||'Not specified').toString(),all=k=>fd.getAll(k).join(', ')||'Not specified';const subject='Creative project brief — '+get('brand')+' — '+get('deliverable');const body=[
-'NEW CREATIVE PROJECT BRIEF — BODE AI AD LAB','',
+ form.addEventListener('submit',e=>{e.preventDefault();if(!validatePanel(3))return;const fd=new FormData(form),get=k=>(fd.get(k)||'Not specified').toString(),all=k=>fd.getAll(k).join(', ')||'Not specified';const subject='Creative project brief - '+get('brand')+' - '+get('deliverable');const body=[
+'NEW CREATIVE PROJECT BRIEF - BODE AI AD LAB','',
 'CONTACT','Name: '+get('name'),'Email: '+get('email'),'Brand: '+get('brand'),'Website / social: '+get('brandLink'),'',
 'WHAT TO CREATE','Deliverable: '+get('deliverable'),'Platforms: '+all('platform'),'Goal: '+get('goal'),'',
 'VISUAL DIRECTION','Style: '+get('style'),'Motion ideas: '+all('motion'),'Length: '+get('duration'),'Format: '+get('format'),'',
