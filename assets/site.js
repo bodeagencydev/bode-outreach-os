@@ -54,3 +54,23 @@ document.addEventListener('DOMContentLoaded',()=>{
  mount('hero-motion','hero');mount('reel-motion','reel');
  const reveal=document.querySelectorAll('.service-card,.project,.step,.service-detail,.contact-card,.showcase-card,.section-head,.callout,.about-grid,.reel-lab-grid');if('IntersectionObserver'in window&&!reduced){const o=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('reveal-on-scroll','is-visible');o.unobserve(e.target)}}),{threshold:.12});reveal.forEach(el=>o.observe(el))}
 });
+
+/* Creative brief builder: progressive steps and a reviewed email handoff. */
+document.addEventListener('DOMContentLoaded',()=>{
+ const form=document.getElementById('creative-brief');if(!form)return;
+ const panels=[...form.querySelectorAll('.brief-panel')],bar=document.getElementById('brief-progress-bar'),label=document.getElementById('brief-progress-label'),result=document.getElementById('brief-result');let step=1;
+ const labels=['The basics','Visual direction','Your idea'];
+ function show(n){step=n;panels.forEach(p=>p.classList.toggle('active',Number(p.dataset.panel)===n));bar.style.width=(n/3*100)+'%';label.textContent='Step '+n+' of 3 · '+labels[n-1];document.querySelector('.brief-aside')?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});}
+ function validatePanel(n){const panel=panels.find(p=>Number(p.dataset.panel)===n);for(const el of panel.querySelectorAll('input[required],textarea[required],select[required]')){if(!el.checkValidity()){el.reportValidity();el.focus();return false;}}return true;}
+ form.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>{if(validatePanel(step))show(Math.min(3,step+1));}));
+ form.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>show(Math.max(1,step-1))));
+ form.addEventListener('submit',e=>{e.preventDefault();if(!validatePanel(3))return;const fd=new FormData(form),get=k=>(fd.get(k)||'Not specified').toString(),all=k=>fd.getAll(k).join(', ')||'Not specified';const subject='Creative project brief — '+get('brand')+' — '+get('deliverable');const body=[
+'NEW CREATIVE PROJECT BRIEF — BODE AI AD LAB','',
+'CONTACT','Name: '+get('name'),'Email: '+get('email'),'Brand: '+get('brand'),'Website / social: '+get('brandLink'),'',
+'WHAT TO CREATE','Deliverable: '+get('deliverable'),'Platforms: '+all('platform'),'Goal: '+get('goal'),'',
+'VISUAL DIRECTION','Style: '+get('style'),'Motion ideas: '+all('motion'),'Length: '+get('duration'),'Format: '+get('format'),'',
+'THE IDEA','Project idea: '+get('idea'),'Deadline: '+get('deadline'),'References: '+get('references'),'Keep / avoid: '+get('notes'),'',
+'Sent from the Bode AI Ad Lab creative brief portal.'
+].join('\n');const mail='mailto:bodeagencyofficial@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);document.getElementById('brief-email-link').href=mail;panels.forEach(p=>p.hidden=true);result.hidden=false;result.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});});
+ document.getElementById('edit-brief')?.addEventListener('click',()=>{result.hidden=true;panels.forEach(p=>p.hidden=false);show(3);});
+});
