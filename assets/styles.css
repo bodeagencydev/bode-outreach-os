@@ -364,3 +364,29 @@ body{background:#070809}body:before{z-index:0;opacity:.72}main,footer,.topbar{po
  .portfolio-cta-section .callout .button{white-space:normal;width:100%}
 }
 @media(prefers-reduced-motion:reduce){.coming-card:after{display:none}}
+
+
+/* Portfolio motion polish and viewing-only video controls */
+.portfolio-hero .eyebrow,.portfolio-hero h1,.portfolio-hero p,.portfolio-count,
+.portfolio-section-heading,.featured-film,.coming-card,.portfolio-cta-section .callout{
+  animation:portfolioRise .72s cubic-bezier(.2,.7,.2,1) both;
+}
+.portfolio-hero h1{animation-delay:.08s}
+.portfolio-hero p{animation-delay:.15s}
+.portfolio-count{animation-delay:.22s}
+.featured-film{animation-delay:.1s}
+.coming-card:nth-child(2){animation-delay:.08s}
+.coming-card:nth-child(3){animation-delay:.16s}
+.coming-card{transition:transform .28s ease,border-color .28s ease,background .28s ease}
+.coming-card:hover{transform:translateY(-5px);border-color:#6ccb2e65;background:linear-gradient(145deg,#171c18,#0d0f12)}
+.featured-film{transition:border-color .3s ease,box-shadow .3s ease}
+.featured-film:hover{border-color:#6ccb2e45;box-shadow:0 32px 90px #0005}
+.film-format-badge{pointer-events:none}
+.featured-film-player video{user-select:none;-webkit-user-select:none}
+@keyframes portfolioRise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){
+ .portfolio-hero .eyebrow,.portfolio-hero h1,.portfolio-hero p,.portfolio-count,
+ .portfolio-section-heading,.featured-film,.coming-card,.portfolio-cta-section .callout{animation:none}
+ .coming-card,.featured-film{transition:none}
+ .coming-card:hover{transform:none}
+}
