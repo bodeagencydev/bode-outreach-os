@@ -170,3 +170,19 @@ body{background:#070809}body:before{z-index:0;opacity:.72}main,footer,.topbar{po
 @media(max-width:900px){.brief-hero-grid{grid-template-columns:1fr .7fr;gap:20px}.brief-art{height:260px}.brief-layout{grid-template-columns:200px minmax(0,1fr);gap:22px}.style-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.brief-hero{padding:48px 0 35px}.brief-hero-grid{grid-template-columns:1fr}.brief-hero h1{font-size:clamp(3rem,13vw,4.6rem)}.brief-art{height:220px}.brief-section{padding:30px 0 55px}.brief-layout{grid-template-columns:1fr;gap:20px}.brief-aside{position:static}.brief-aside h2{font-size:1.65rem;margin:10px 0}.brief-aside>p{margin-bottom:10px}.brief-progress{margin:15px 0 7px}.brief-aside-note{display:none}.brief-panel{padding:20px 16px}.choice-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.choice-card{padding:12px;min-height:145px}.choice-card strong{font-size:.79rem}.choice-card small{font-size:.7rem}.brief-fields.two-col{grid-template-columns:1fr}.style-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.brief-actions{align-items:stretch;flex-wrap:wrap}.brief-actions .button{flex:1}.brief-hint{width:100%;order:2}.brief-panel-head h2{font-size:1.9rem}.brief-bottom{padding:48px 20px 58px}}
 @media(prefers-reduced-motion:reduce){.brief-art-orbit,.brief-art-core{animation:none!important}.brief-panel.active{animation:none}}
+
+
+/* Brief portal: make the abstract elements visibly assemble into one idea. */
+.brief-art-pieces{position:absolute;inset:0;z-index:2;pointer-events:none}
+.brief-art-pieces .piece{position:absolute;display:block;left:50%;top:50%;width:22px;height:22px;border:1px solid #eaffb7;background:linear-gradient(135deg,#dfff94,#789a28);box-shadow:0 0 25px #c9ff4a35;animation:piece-align 5.8s cubic-bezier(.2,.7,.2,1) infinite}
+.brief-art-pieces .piece-one{border-radius:7px;--x:-102px;--y:-46px;--r:45deg}
+.brief-art-pieces .piece-two{border-radius:50%;background:linear-gradient(135deg,#d7cfff,#7762c7);border-color:#d7cfff;--x:100px;--y:-55px;--r:0deg;animation-delay:-1.45s}
+.brief-art-pieces .piece-three{width:14px;height:34px;border-radius:5px;background:linear-gradient(#c9ff4a,#536b20);--x:-108px;--y:57px;--r:-35deg;animation-delay:-2.9s}
+.brief-art-pieces .piece-four{width:28px;height:12px;border-radius:5px;background:linear-gradient(90deg,#a795ff,#5f4aa9);border-color:#c4b9ff;--x:91px;--y:57px;--r:28deg;animation-delay:-4.35s}
+@keyframes piece-align{0%,12%{translate:var(--x) var(--y);rotate:var(--r);scale:.82;opacity:.4}38%,68%{translate:0 0;rotate:0deg;scale:1;opacity:1}84%,100%{translate:var(--x) var(--y);rotate:var(--r);scale:.82;opacity:.4}}
+.brief-art-core{z-index:4}
+.brief-art-orbit{z-index:1}
+.brief-art-label{z-index:5}
+.choice-card:focus-within,.style-card:focus-within{outline:2px solid var(--lime);outline-offset:3px}
+@media(max-width:700px){.brief-art-pieces .piece-one{--x:-72px;--y:-38px}.brief-art-pieces .piece-two{--x:72px;--y:-42px}.brief-art-pieces .piece-three{--x:-76px;--y:44px}.brief-art-pieces .piece-four{--x:72px;--y:45px}}
+@media(prefers-reduced-motion:reduce){.brief-art-pieces .piece{animation:none;translate:0 0;opacity:.7}}
