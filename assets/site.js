@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded',()=>{const toggle=document.querySelector('.menu-toggle'),links=document.querySelector('.nav-links');if(toggle&&links){toggle.addEventListener('click',()=>{const open=links.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Close menu':'Open menu');toggle.textContent=open?'×':'☰'});links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{links.classList.remove('open');toggle.setAttribute('aria-expanded','false');toggle.textContent='☰'}))}document.querySelectorAll('[data-year]').forEach(el=>el.textContent=new Date().getFullYear())});
+document.addEventListener('DOMContentLoaded',()=>{const toggle=document.querySelector('.menu-toggle'),links=document.querySelector('.nav-links');if(toggle&&links){document.addEventListener('keydown',e=>{if(e.key==='Escape'&&links.classList.contains('open')){links.classList.remove('open');toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Open menu');toggle.textContent='☰';toggle.focus()}});toggle.addEventListener('click',()=>{const open=links.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Close menu':'Open menu');toggle.textContent=open?'×':'☰'});links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{links.classList.remove('open');toggle.setAttribute('aria-expanded','false');toggle.textContent='☰'}))}document.querySelectorAll('[data-year]').forEach(el=>el.textContent=new Date().getFullYear())});
 /* Lightweight generative motion graphic and progressive reveal. */
 document.addEventListener('DOMContentLoaded',()=>{
  const canvas=document.getElementById('signal-canvas');
@@ -64,13 +64,13 @@ document.addEventListener('DOMContentLoaded',()=>{
  function validatePanel(n){const panel=panels.find(p=>Number(p.dataset.panel)===n);for(const el of panel.querySelectorAll('input[required],textarea[required],select[required]')){if(!el.checkValidity()){el.reportValidity();el.focus();return false;}}return true;}
  form.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>{if(validatePanel(step))show(Math.min(3,step+1));}));
  form.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>show(Math.max(1,step-1))));
- form.addEventListener('submit',e=>{e.preventDefault();if(!validatePanel(3))return;const fd=new FormData(form),get=k=>(fd.get(k)||'Not specified').toString(),all=k=>fd.getAll(k).join(', ')||'Not specified';const subject='Creative project brief — '+get('brand')+' — '+get('deliverable');const body=[
-'NEW CREATIVE PROJECT BRIEF — BODE AI AD LAB','',
+ form.addEventListener('submit',e=>{e.preventDefault();if(!validatePanel(3))return;const fd=new FormData(form),get=k=>(fd.get(k)||'Not specified').toString(),all=k=>fd.getAll(k).join(', ')||'Not specified';const subject='Creative project brief - '+get('brand')+' - '+get('deliverable');const body=[
+'NEW CREATIVE PROJECT BRIEF - BODE AI AD LAB','',
 'CONTACT','Name: '+get('name'),'Email: '+get('email'),'Brand: '+get('brand'),'Website / social: '+get('brandLink'),'',
 'WHAT TO CREATE','Deliverable: '+get('deliverable'),'Platforms: '+all('platform'),'Goal: '+get('goal'),'',
 'VISUAL DIRECTION','Style: '+get('style'),'Motion ideas: '+all('motion'),'Length: '+get('duration'),'Format: '+get('format'),'',
 'THE IDEA','Project idea: '+get('idea'),'Deadline: '+get('deadline'),'References: '+get('references'),'Keep / avoid: '+get('notes'),'',
 'Sent from the Bode AI Ad Lab creative brief portal.'
-].join('\n');const mail='mailto:budyagencyofficial@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);document.getElementById('brief-email-link').href=mail;panels.forEach(p=>p.hidden=true);result.hidden=false;result.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});});
+].join('\n');const mail='mailto:bodeagencyofficial@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);document.getElementById('brief-email-link').href=mail;panels.forEach(p=>p.hidden=true);result.hidden=false;result.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});});
  document.getElementById('edit-brief')?.addEventListener('click',()=>{result.hidden=true;panels.forEach(p=>p.hidden=false);show(3);});
 });
