@@ -38,3 +38,13 @@
 .contact-banner-copy{position:relative;z-index:1;width:min(var(--max),calc(100% - 40px));margin:auto;padding:55px 0;max-width:1200px}
 .contact-banner-copy p{font:500 clamp(1.4rem,3vw,2.4rem)/1.2 'Space Grotesk';letter-spacing:-.04em;max-width:700px;margin:14px 0 0}
 @media(max-width:680px){.showcase-grid{grid-template-columns:1fr}.showcase-card{min-height:290px}.about-panel{min-height:340px}.contact-banner{min-height:230px}.contact-banner-copy{width:calc(100% - 32px);padding:42px 0}}
+
+/* Explicit stacking order keeps photography visible above card backgrounds. */
+.hero-art>.hero-photo{z-index:0}
+.hero-art:before{z-index:1}
+.hero-art:after{z-index:2}
+.art-card{z-index:3}
+.art-stamp{z-index:3}
+.project-art>img{z-index:0}
+.project-art:before{z-index:1}
+.project-label{z-index:2}
