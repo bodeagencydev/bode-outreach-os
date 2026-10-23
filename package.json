@@ -1,1 +1,9 @@
-{"name":"bode-outreach-os","private":true,"version":"1.0.0","scripts":{"dev":"vercel dev"},"engines":{"node":">=20"}}
+{
+  "name": "boot-ai-art-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Boot AI Art Lab creative portfolio website",
+  "scripts": {
+    "start": "npx serve ."
+  }
+}
