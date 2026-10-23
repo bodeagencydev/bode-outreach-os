@@ -1,8 +1,8 @@
 {
-  "name": "boot-ai-art-lab",
+  "name": "bode-ai-ad-lab",
   "version": "1.0.0",
   "private": true,
-  "description": "Boot AI Art Lab creative portfolio website",
+  "description": "Bode AI Ad Lab creative studio website",
   "scripts": {
     "start": "npx serve ."
   }
