@@ -574,16 +574,16 @@ main>section:nth-of-type(3n+1) .site-section-number{animation-name:bodeNumberDro
  transition:transform .08s linear;will-change:transform;
 }
 .hero-cinema.direct-manipulation-scene .cinema-ring.ring-a {
- transform:translate(-50%,-50%) rotate(calc(-22deg + var(--scene-y) * .8 + var(--tilt-y) * 2)) scale(1.04) !important;transition:transform .12s linear;
+ transform:translate(-50%,-50%) rotate(calc(-22deg + var(--scene-y) + var(--tilt-y))) scale(1.04) !important;transition:transform .12s linear;
 }
 .hero-cinema.direct-manipulation-scene .cinema-ring.ring-b {
- transform:translate(-50%,-50%) rotate(calc(38deg + var(--scene-x) * .8 + var(--tilt-x) * 2)) scale(.96) !important;transition:transform .12s linear;
+ transform:translate(-50%,-50%) rotate(calc(38deg + var(--scene-x) + var(--tilt-x))) scale(.96) !important;transition:transform .12s linear;
 }
 .motion-visual.direct-manipulation-scene {
  background:radial-gradient(ellipse at var(--pointer-glow-x) var(--pointer-glow-y),rgba(201,255,74,.23),transparent 38%),radial-gradient(ellipse at 50% 50%,#c9ff4a21,transparent 36%),#0c0e0e !important;
 }
 .motion-visual.direct-manipulation-scene canvas {
- transform:perspective(1000px) rotateX(calc(var(--tilt-x) + var(--scene-x) * .5)) rotateY(calc(var(--tilt-y) + var(--scene-y) * .5)) scale(1.12);
+ transform:perspective(1000px) rotateX(calc(var(--tilt-x) + var(--scene-x))) rotateY(calc(var(--tilt-y) + var(--scene-y))) scale(1.12);
  transform-origin:center;transition:transform .09s linear;will-change:transform;
 }
 .motion-visual.direct-manipulation-scene .motion-orbit.orbit-one {
