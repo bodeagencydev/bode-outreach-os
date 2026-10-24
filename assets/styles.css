@@ -561,3 +561,52 @@ main>section:nth-of-type(3n+1) .site-section-number{animation-name:bodeNumberDro
   .direct-manipulation-scene .motion-orbit,
   .direct-manipulation-scene .motion-core { transition:none !important; }
 }
+
+
+/* Strong, unmistakable pointer-controlled 3D response. */
+.direct-manipulation-scene { perspective:1100px; --pointer-glow-x:50%; --pointer-glow-y:50%; }
+.hero-cinema.direct-manipulation-scene {
+ background:radial-gradient(ellipse at var(--pointer-glow-x) var(--pointer-glow-y),rgba(201,255,74,.2),transparent 35%),radial-gradient(ellipse at 50% 48%,#29351a,#11150d 25%,#0a0b0b 58%,#070809);
+}
+.hero-cinema.direct-manipulation-scene .cinema-object {
+ animation-play-state:paused !important;
+ transform:translate3d(-50%,-50%,0) rotateX(calc(-24deg + var(--tilt-x) + var(--scene-x))) rotateY(calc(36deg + var(--tilt-y) + var(--scene-y))) rotateZ(-8deg) !important;
+ transition:transform .08s linear;will-change:transform;
+}
+.hero-cinema.direct-manipulation-scene .cinema-ring.ring-a {
+ transform:translate(-50%,-50%) rotate(calc(-22deg + var(--scene-y) * .8 + var(--tilt-y) * 2)) scale(1.04) !important;transition:transform .12s linear;
+}
+.hero-cinema.direct-manipulation-scene .cinema-ring.ring-b {
+ transform:translate(-50%,-50%) rotate(calc(38deg + var(--scene-x) * .8 + var(--tilt-x) * 2)) scale(.96) !important;transition:transform .12s linear;
+}
+.motion-visual.direct-manipulation-scene {
+ background:radial-gradient(ellipse at var(--pointer-glow-x) var(--pointer-glow-y),rgba(201,255,74,.23),transparent 38%),radial-gradient(ellipse at 50% 50%,#c9ff4a21,transparent 36%),#0c0e0e !important;
+}
+.motion-visual.direct-manipulation-scene canvas {
+ transform:perspective(1000px) rotateX(calc(var(--tilt-x) + var(--scene-x) * .5)) rotateY(calc(var(--tilt-y) + var(--scene-y) * .5)) scale(1.12);
+ transform-origin:center;transition:transform .09s linear;will-change:transform;
+}
+.motion-visual.direct-manipulation-scene .motion-orbit.orbit-one {
+ width:min(76%,390px) !important;height:min(35%,170px) !important;
+ transform:translate(-50%,-50%) rotate(calc(-28deg + var(--scene-y) + var(--tilt-y) * 2)) !important;transition:transform .09s linear;
+}
+.motion-visual.direct-manipulation-scene .motion-orbit.orbit-two {
+ width:min(62%,320px) !important;height:min(48%,220px) !important;
+ transform:translate(-50%,-50%) rotate(calc(42deg + var(--scene-x) - var(--tilt-y) * 2)) !important;transition:transform .09s linear;
+}
+.motion-visual.direct-manipulation-scene .motion-core {
+ transform:translate(-50%,-50%) rotateX(calc(var(--scene-x) + var(--tilt-x))) rotateY(calc(var(--scene-y) + var(--tilt-y))) !important;
+ transition:transform .09s linear;
+}
+.direct-manipulation-scene.is-dragging { cursor:grabbing; }
+.direct-manipulation-scene.is-dragging .cinema-object,
+.direct-manipulation-scene.is-dragging canvas,
+.direct-manipulation-scene.is-dragging .motion-orbit,
+.direct-manipulation-scene.is-dragging .motion-core { transition:none !important; }
+@media (hover:hover) and (pointer:fine) {
+ .direct-manipulation-scene:hover .cinema-object { filter:drop-shadow(0 0 22px rgba(201,255,74,.28)); }
+}
+@media (prefers-reduced-motion:reduce) {
+ .hero-cinema.direct-manipulation-scene .cinema-object { animation:none !important; }
+ .direct-manipulation-scene canvas { transition:none !important; }
+}
