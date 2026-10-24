@@ -178,3 +178,57 @@ document.addEventListener('DOMContentLoaded',()=>{
    document.querySelectorAll('.site-motion-card').forEach(card=>card.addEventListener('pointerleave',()=>{card.style.setProperty('--card-rx','0deg');card.style.setProperty('--card-ry','0deg')}));
  }
 });
+
+
+/* Direct manipulation for the creative motion objects.
+   Pointer input supports mouse, pen and touch without adding dependencies. */
+document.addEventListener('DOMContentLoaded',()=>{
+ const scenes=[
+  {host:document.querySelector('.hero-cinema'),targets:[document.querySelector('.cinema-object'),document.querySelector('.cinema-ring.ring-a'),document.querySelector('.cinema-ring.ring-b')],canvas:document.getElementById('hero-motion'),kind:'cube'},
+  {host:document.querySelector('.motion-visual'),targets:[document.querySelector('.motion-orbit.orbit-one'),document.querySelector('.motion-orbit.orbit-two'),document.querySelector('.motion-core')],canvas:document.getElementById('signal-canvas'),kind:'galaxy'}
+ ];
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ scenes.forEach(scene=>{
+  if(!scene.host)return;
+  const host=scene.host;
+  host.classList.add('direct-manipulation-scene');
+  host.setAttribute('aria-label',(host.getAttribute('aria-label')||'Interactive animated visual')+'; move pointer to explore, drag to rotate');
+  host.setAttribute('tabindex','0');
+  host.setAttribute('role','group');
+  host.setAttribute('aria-roledescription','interactive motion visual');
+  host.style.setProperty('--scene-x','0deg');host.style.setProperty('--scene-y','0deg');
+  let down=false,lastX=0,lastY=0,rotX=0,rotY=0,pointerId=null;
+  const update=(x,y)=>{
+   const b=host.getBoundingClientRect(),nx=Math.max(-1,Math.min(1,((x-b.left)/b.width-.5)*2)),ny=Math.max(-1,Math.min(1,((y-b.top)/b.height-.5)*2));
+   host.style.setProperty('--pointer-x',(nx*50+50)+'%');host.style.setProperty('--pointer-y',(ny*50+50)+'%');
+   if(!down){host.style.setProperty('--tilt-x',(-ny*7)+'deg');host.style.setProperty('--tilt-y',(nx*9)+'deg');}
+  };
+  host.addEventListener('pointermove',e=>{
+   update(e.clientX,e.clientY);
+   if(!down)return;
+   if(pointerId!==null&&e.pointerId!==pointerId)return;
+   rotY+=(e.clientX-lastX)*.65;rotX-=(e.clientY-lastY)*.55;
+   lastX=e.clientX;lastY=e.clientY;
+   host.style.setProperty('--scene-x',rotX+'deg');host.style.setProperty('--scene-y',rotY+'deg');
+   host.classList.add('is-dragging');
+  });
+  host.addEventListener('pointerdown',e=>{
+   if(e.pointerType==='mouse'&&e.button!==0)return;
+   down=true;pointerId=e.pointerId;lastX=e.clientX;lastY=e.clientY;
+   host.classList.add('is-dragging');
+   try{host.setPointerCapture(e.pointerId)}catch{}
+  });
+  const release=e=>{down=false;pointerId=null;host.classList.remove('is-dragging');};
+  host.addEventListener('pointerup',release);host.addEventListener('pointercancel',release);host.addEventListener('lostpointercapture',release);
+  host.addEventListener('pointerleave',()=>{if(!down){host.style.setProperty('--tilt-x','0deg');host.style.setProperty('--tilt-y','0deg')}});
+  host.addEventListener('keydown',e=>{
+   const step=e.shiftKey?12:5;
+   if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))return;
+   e.preventDefault();
+   if(e.key==='ArrowLeft')rotY-=step;if(e.key==='ArrowRight')rotY+=step;
+   if(e.key==='ArrowUp')rotX-=step;if(e.key==='ArrowDown')rotX+=step;
+   host.style.setProperty('--scene-x',rotX+'deg');host.style.setProperty('--scene-y',rotY+'deg');
+  });
+  if(reduced){host.style.setProperty('--tilt-x','0deg');host.style.setProperty('--tilt-y','0deg');}
+ });
+});
