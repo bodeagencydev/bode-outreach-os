@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   let down=false,lastX=0,lastY=0,rotX=0,rotY=0,pointerId=null;
   const update=(x,y)=>{
    const b=host.getBoundingClientRect(),nx=Math.max(-1,Math.min(1,((x-b.left)/b.width-.5)*2)),ny=Math.max(-1,Math.min(1,((y-b.top)/b.height-.5)*2));
-   host.style.setProperty('--pointer-x',(nx*50+50)+'%');host.style.setProperty('--pointer-y',(ny*50+50)+'%');
+   host.style.setProperty('--pointer-x',(nx*50+50)+'%');host.style.setProperty('--pointer-y',(ny*50+50)+'%');host.style.setProperty('--pointer-glow-x',(nx*50+50)+'%');host.style.setProperty('--pointer-glow-y',(ny*50+50)+'%');
    if(!down){host.style.setProperty('--tilt-x',(-ny*7)+'deg');host.style.setProperty('--tilt-y',(nx*9)+'deg');}
   };
   host.addEventListener('pointermove',e=>{
