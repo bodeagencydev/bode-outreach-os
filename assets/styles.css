@@ -537,10 +537,10 @@ main>section:nth-of-type(3n+1) .site-section-number{animation-name:bodeNumberDro
 .motion-visual.direct-manipulation-scene.is-dragging .motion-orbit,
 .motion-visual.direct-manipulation-scene.is-dragging .motion-core { transition:none !important; }
 .hero-cinema.direct-manipulation-scene .cinema-ring.ring-a {
-  transform: translate(-50%,-50%) rotate(calc(-22deg + var(--scene-y))) scale(calc(1 + var(--tilt-x) * .001));
+  transform: translate(-50%,-50%) rotate(calc(-22deg + var(--scene-y))) scale(1);
 }
 .hero-cinema.direct-manipulation-scene .cinema-ring.ring-b {
-  transform: translate(-50%,-50%) rotate(calc(38deg + var(--scene-x))) scale(calc(1 + var(--tilt-y) * .001));
+  transform: translate(-50%,-50%) rotate(calc(38deg + var(--scene-x))) scale(1);
 }
 .motion-visual.direct-manipulation-scene .motion-orbit.orbit-one {
   transform: translate(-50%,-50%) rotate(calc(-28deg + var(--scene-y) + var(--tilt-y)));
