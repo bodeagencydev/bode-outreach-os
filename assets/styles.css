@@ -644,3 +644,126 @@ main>section:nth-of-type(3n+1) .site-section-number{animation-name:bodeNumberDro
 .motion-visual.direct-manipulation-scene .motion-orbit.orbit-two {
   transform: translate(-50%,-50%) rotate(calc(42deg + var(--scene-x) - var(--tilt-y))) !important;
 }
+
+
+/* Direction D / mobile containment pass.
+   Keep the cinematic editorial direction while preventing any component from
+   widening the document beyond the phone viewport. */
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+main, header, footer, section, nav, .container {
+  min-width: 0;
+  max-width: 100%;
+}
+img, video, canvas, svg, iframe {
+  max-width: 100%;
+}
+@supports not (overflow: clip) {
+  html, body { overflow-x: hidden; }
+}
+@media (max-width: 760px) {
+  .container {
+    width: calc(100% - 32px);
+    max-width: calc(100% - 32px);
+  }
+  .topbar, .nav, .nav-links, .nav-cta,
+  .hero, .hero-grid, .hero-art, .motion-feature,
+  .motion-visual, .motion-copy, .section, .section-head,
+  .grid-3, .project-grid, .steps, .about-grid,
+  .contact-grid, .service-detail, .callout, .footer,
+  .footer-row, .footer-links, .cross-studio, .studio-marquee {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .hero-grid, .section-head, .about-grid, .contact-grid,
+  .service-detail, .callout, .footer-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero-grid { gap: 28px; }
+  .hero h1, .page-hero h1, .section-head h2, .callout h2 {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+  .hero-art {
+    width: 100%;
+    min-width: 0;
+    min-height: clamp(300px, 92vw, 410px);
+    border-radius: 22px;
+    contain: layout paint;
+  }
+  .hero-art:before {
+    width: min(76vw, 300px);
+    height: min(76vw, 300px);
+    right: -12px;
+  }
+  .cinema-topline, .cinema-caption {
+    left: 14px;
+    right: 14px;
+    max-width: calc(100% - 28px);
+    gap: 8px;
+    overflow-wrap: anywhere;
+  }
+  .cinema-type {
+    max-width: calc(100% - 28px);
+    overflow-wrap: anywhere;
+  }
+  .motion-feature {
+    overflow: clip;
+  }
+  .motion-visual {
+    width: 100%;
+    min-width: 0;
+    overflow: clip;
+  }
+  .motion-copy { padding-inline: 16px; }
+  .ticker, .studio-marquee {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .ticker-track { justify-content: flex-start; gap: 18px; }
+  .grid-3, .project-grid, .steps { grid-template-columns: minmax(0, 1fr); }
+  .service-card, .project, .step, .contact-card, .callout {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .project-art { min-width: 0; }
+  .project-info { min-width: 0; overflow-wrap: anywhere; }
+  .project-info > div { min-width: 0; }
+  .button, .nav-cta {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+  .hero-actions { min-width: 0; }
+  .hero-actions > a { min-width: 0; }
+  .site-section-number { right: 16px; }
+  #site-scroll-index { right: 5px; }
+}
+@media (max-width: 420px) {
+  .container { width: calc(100% - 28px); max-width: calc(100% - 28px); }
+  .nav { gap: 8px; }
+  .brand { gap: 8px; max-width: calc(100% - 108px); }
+  .brand img { width: 38px; height: 38px; flex: 0 0 38px; }
+  .brand-text { font-size: .78rem; overflow-wrap: anywhere; }
+  .brand-text span { font-size: .49rem; letter-spacing: .1em; }
+  .nav-cta { padding: 10px 12px; font-size: .75rem; }
+  .hero { padding-top: 44px; }
+  .hero h1 { font-size: clamp(2.65rem, 13vw, 3.45rem); }
+  .hero-copy { font-size: .97rem; }
+  .hero-actions { align-items: stretch; flex-direction: column; }
+  .hero-actions .button { width: 100%; }
+  .hero-art { min-height: 300px; }
+  .cinema-index { max-width: calc(100% - 24px); overflow-wrap: anywhere; }
+  .callout { padding: 24px 18px; }
+  .footer-links { flex-wrap: wrap; gap: 12px 16px; }
+}
