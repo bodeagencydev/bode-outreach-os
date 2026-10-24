@@ -15,7 +15,7 @@ A premium, mobile-first, multi-page website for Bode AI Ad Lab.
 The current logo file is `Bode_AI_Ad_Lab_logo_2K_20261023021653.jpg`. The website uses the name **Bode AI Ad Lab**.
 
 ## Contact
-- Email: budyagencyofficial@gmail.com
+- Email: bodeagencyofficial@gmail.com
 - Instagram: https://www.instagram.com/bodeaiadlab/
 
 ## Deploy
