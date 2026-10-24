@@ -1,13 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-<rect width="512" height="512" rx="112" fill="#090a0d"/>
-<circle cx="256" cy="256" r="164" fill="none" stroke="#6ccb2e" stroke-width="9"/>
-<g fill="#6ccb2e" stroke="#090a0d" stroke-width="12" stroke-linejoin="round">
-<path d="M238 108 L301 226 L389 226 L323 108 Z"/>
-<path d="M404 236 L335 354 L379 430 L448 311 Z"/>
-<path d="M369 443 L232 443 L188 367 L325 367 Z"/>
-<path d="M174 355 L105 236 L61 312 L130 431 Z"/>
-<path d="M65 225 L202 225 L246 149 L109 149 Z"/>
-<path d="M111 133 L180 252 L136 328 L67 209 Z"/>
-</g>
-<path d="M256 205 C268 239 273 244 307 256 C273 268 268 273 256 307 C244 273 239 268 205 256 C239 244 244 239 256 205Z" fill="#8eea3a"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><image href="/Bode_AI_AD_LAB_logo_2K_20261023112208.jpg" width="512" height="512" preserveAspectRatio="xMidYMid meet"/></svg>

@@ -498,3 +498,14 @@ main>section:nth-of-type(3n+1) .site-section-number{animation-name:bodeNumberDro
 .nav-cta:hover,.button:hover{box-shadow:0 8px 26px rgba(108,203,46,.14);filter:brightness(1.04)}
 .service-card,.project,.contact-card{transition:transform .25s ease,border-color .25s ease}
 @media(prefers-reduced-motion:reduce){.nav-cta,.button,.service-card,.project,.contact-card{transition:none}}
+
+/* Small requested details: retain the site's existing visual system and artwork. */
+.project-mark{flex:0 0 38px;width:38px;height:38px;border:1px solid #6ccb2e55;border-radius:50%;display:grid;place-items:center;color:var(--lime);font-size:1.2rem;line-height:1;transition:transform .22s ease,border-color .22s ease}
+.project:hover .project-mark{transform:translate(2px,-2px);border-color:var(--lime)}
+.cross-studio{display:flex;align-items:center;justify-content:space-between;gap:28px;padding:clamp(24px,4vw,42px);border:1px solid var(--line);border-radius:26px;background:linear-gradient(115deg,#111318,#10130e)}
+.cross-studio h2{font:600 clamp(1.8rem,4vw,3rem)/1.08 'Sora',sans-serif;letter-spacing:-.055em;margin:12px 0}
+.cross-studio h2 em{font-style:normal;color:var(--lime)}
+.cross-studio p{max-width:660px;color:var(--muted);margin:0}
+.cross-studio .button{flex:0 0 auto}
+@media(max-width:680px){.cross-studio{align-items:stretch;flex-direction:column;gap:20px}.cross-studio .button{width:100%;white-space:normal}}
+@media(prefers-reduced-motion:reduce){.project-mark{transition:none}}
