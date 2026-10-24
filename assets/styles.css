@@ -509,3 +509,55 @@ main>section:nth-of-type(3n+1) .site-section-number{animation-name:bodeNumberDro
 .cross-studio .button{flex:0 0 auto}
 @media(max-width:680px){.cross-studio{align-items:stretch;flex-direction:column;gap:20px}.cross-studio .button{width:100%;white-space:normal}}
 @media(prefers-reduced-motion:reduce){.project-mark{transition:none}}
+
+
+/* Cursor/touch interaction for the hero cube and orbiting creative galaxy. */
+.direct-manipulation-scene {
+  --pointer-x: 50%;
+  --pointer-y: 50%;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --scene-x: 0deg;
+  --scene-y: 0deg;
+  position: relative;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  outline-offset: 5px;
+}
+.direct-manipulation-scene:focus-visible { outline: 1px solid var(--lime); }
+.direct-manipulation-scene.is-dragging { cursor: grabbing; }
+.hero-cinema.direct-manipulation-scene .cinema-object {
+  transform: translate(-50%,-50%) rotateX(calc(var(--tilt-x) + var(--scene-x))) rotateY(calc(var(--tilt-y) + var(--scene-y))) rotateZ(-18deg);
+  transition: transform .12s ease-out;
+  transform-style: preserve-3d;
+}
+.hero-cinema.direct-manipulation-scene.is-dragging .cinema-object,
+.motion-visual.direct-manipulation-scene.is-dragging .motion-orbit,
+.motion-visual.direct-manipulation-scene.is-dragging .motion-core { transition:none !important; }
+.hero-cinema.direct-manipulation-scene .cinema-ring.ring-a {
+  transform: translate(-50%,-50%) rotate(calc(-22deg + var(--scene-y))) scale(calc(1 + var(--tilt-x) * .001));
+}
+.hero-cinema.direct-manipulation-scene .cinema-ring.ring-b {
+  transform: translate(-50%,-50%) rotate(calc(38deg + var(--scene-x))) scale(calc(1 + var(--tilt-y) * .001));
+}
+.motion-visual.direct-manipulation-scene .motion-orbit.orbit-one {
+  transform: translate(-50%,-50%) rotate(calc(-28deg + var(--scene-y) + var(--tilt-y)));
+}
+.motion-visual.direct-manipulation-scene .motion-orbit.orbit-two {
+  transform: translate(-50%,-50%) rotate(calc(42deg + var(--scene-x) - var(--tilt-y)));
+}
+.motion-visual.direct-manipulation-scene .motion-core {
+  transform: translate(-50%,-50%) rotateX(calc(var(--scene-x) + var(--tilt-x))) rotateY(calc(var(--scene-y) + var(--tilt-y)));
+}
+.direct-manipulation-scene canvas { pointer-events:none; }
+@media (hover:hover) and (pointer:fine) {
+  .direct-manipulation-scene:hover { box-shadow: inset 0 0 70px rgba(201,255,74,.035); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .direct-manipulation-scene .cinema-object,
+  .direct-manipulation-scene .cinema-ring,
+  .direct-manipulation-scene .motion-orbit,
+  .direct-manipulation-scene .motion-core { transition:none !important; }
+}
