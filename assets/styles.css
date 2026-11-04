@@ -843,3 +843,8 @@ img, video, canvas, svg, iframe {
 .contact-brief-art span{position:absolute;z-index:1;left:18px;bottom:17px;color:#d9ff73;font:600 .65rem 'Sora';letter-spacing:.14em}
 @media(max-width:760px){.contact-brief-callout{grid-template-columns:1fr;gap:22px}.contact-brief-art{min-height:0;aspect-ratio:1.55}}
 @media(max-width:680px){.contact-card-image{aspect-ratio:1.55}.contact-card-copy{padding:21px 20px 23px}.contact-brief-art{border-radius:16px}}
+
+
+/* Editorial typography cleanup: remove decorative dash strokes before eyebrow labels. */
+.eyebrow{gap:0}
+.eyebrow:before{content:none!important;display:none!important}
