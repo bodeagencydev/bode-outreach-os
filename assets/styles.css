@@ -778,3 +778,17 @@ img, video, canvas, svg, iframe {
 .showreel-bottom{bottom:25px;align-items:end;color:#e2e4dc}.showreel-bottom a{color:var(--lime);white-space:nowrap}.showreel-index{position:absolute;right:25px;top:50%;font:700 .75rem 'Sora';color:var(--lime);writing-mode:vertical-rl}.showreel-index span{color:#ffffff88}
 @media(max-width:900px){.hero-showreel{min-height:520px}}
 @media(max-width:680px){.hero-showreel{min-height:500px;border-radius:22px}.showreel-copy{left:6%;top:32%}.showreel-copy strong{font-size:clamp(2.55rem,11vw,4rem)}.showreel-top,.showreel-bottom{left:16px;right:16px}.showreel-top{top:17px;font-size:.52rem}.showreel-bottom{bottom:17px;align-items:flex-start;flex-direction:column;font-size:.55rem}.showreel-index{right:15px}.hero-showreel-video{object-position:55% center}}
+
+
+/* Homepage second film showcase */
+.motion-visual.motion-showreel{background:#070809;isolation:isolate;min-height:440px;border-color:#34383f;box-shadow:0 28px 90px #0007}
+.motion-showreel-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:-2}
+.motion-showreel-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#050608a8 0%,transparent 28%,#05060822 48%,#050608e8 100%),linear-gradient(90deg,#05060880,transparent 90%)}
+.motion-visual-top,.motion-visual-bottom{position:absolute;left:22px;right:22px;display:flex;justify-content:space-between;gap:12px;color:#f1f2eb;font:700 .59rem 'Sora';letter-spacing:.14em}
+.motion-visual-top{top:22px}.motion-visual-top span:last-child{color:var(--lime)}
+.motion-visual-stamp{position:absolute;left:7%;top:34%;font:700 clamp(2.5rem,5vw,4.2rem)/.86 'Sora';letter-spacing:-.07em;color:#f7f8f2;text-shadow:0 5px 30px #000b}
+.motion-visual-stamp:first-line{color:var(--lime)}
+.motion-visual-bottom{bottom:22px;align-items:end;color:#e2e4dc}
+.motion-visual-bottom a{color:var(--lime);white-space:nowrap}
+.motion-showreel:before,.motion-showreel:after{display:none}
+@media(max-width:680px){.motion-visual.motion-showreel{min-height:340px}.motion-visual-top,.motion-visual-bottom{left:15px;right:15px;font-size:.5rem}.motion-visual-top{top:15px}.motion-visual-bottom{bottom:15px;align-items:flex-start;flex-direction:column}.motion-visual-stamp{left:6%;top:36%;font-size:clamp(2.7rem,12vw,3.8rem)}}
