@@ -816,3 +816,30 @@ img, video, canvas, svg, iframe {
 .values-grid .service-card-image{aspect-ratio:1.35}
 @media(max-width:900px){.service-detail-visual{grid-template-columns:1fr 1.1fr;gap:22px}.service-detail-image{min-height:220px}}
 @media(max-width:680px){.service-card-image{aspect-ratio:1.55}.service-detail-visual{grid-template-columns:1fr;gap:17px;padding:27px 0}.service-detail-image{min-height:0;aspect-ratio:1.55}.service-detail-copy h2{font-size:1.65rem}.service-card-copy{padding:19px 20px 22px}}
+
+
+/* Contact page: image-led contact routes and a visual creative brief panel. */
+.contact-visual-grid{align-items:stretch}
+.contact-visual-card{padding:0;overflow:hidden;display:flex;flex-direction:column;background:#101216}
+.contact-card-image{position:relative;aspect-ratio:1.85;overflow:hidden;background:#171a20}
+.contact-card-image:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,rgba(7,8,11,.72))}
+.contact-card-image img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.7,.2,1);filter:saturate(.86)}
+.contact-visual-card:hover .contact-card-image img{transform:scale(1.045)}
+.contact-card-image span{position:absolute;z-index:1;left:22px;bottom:17px;color:#d9ff73;font:600 .65rem 'Sora';letter-spacing:.15em}
+.contact-card-copy{padding:25px 26px 28px;flex:1}
+.contact-card-copy h2{font:600 clamp(1.45rem,2.6vw,1.9rem)/1.1 'Sora';margin:12px 0 8px;letter-spacing:-.04em}
+.contact-card-copy p{color:var(--muted);margin:0 0 17px;max-width:470px}
+.contact-card-copy .inline{color:var(--lime);font-weight:700}
+.contact-card-actions{display:flex;flex-wrap:wrap;gap:18px}
+.contact-card-actions .subtle-link{color:#d7d9d3}
+.contact-brief-callout{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.82fr);gap:28px;align-items:center;overflow:hidden;padding:clamp(25px,4vw,46px);background:radial-gradient(ellipse at 0 0,rgba(201,255,74,.13),transparent 45%),linear-gradient(120deg,#11140f,#111318 70%)}
+.contact-brief-copy{position:relative;z-index:1}
+.contact-brief-copy h2{max-width:580px}
+.contact-brief-copy p{max-width:560px}
+.contact-brief-copy .button{margin-top:8px}
+.contact-brief-art{position:relative;min-height:270px;aspect-ratio:1.35;overflow:hidden;border:1px solid #ffffff22;border-radius:20px;background:#171a20}
+.contact-brief-art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,rgba(7,8,11,.72))}
+.contact-brief-art img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;filter:saturate(.82)}
+.contact-brief-art span{position:absolute;z-index:1;left:18px;bottom:17px;color:#d9ff73;font:600 .65rem 'Sora';letter-spacing:.14em}
+@media(max-width:760px){.contact-brief-callout{grid-template-columns:1fr;gap:22px}.contact-brief-art{min-height:0;aspect-ratio:1.55}}
+@media(max-width:680px){.contact-card-image{aspect-ratio:1.55}.contact-card-copy{padding:21px 20px 23px}.contact-brief-art{border-radius:16px}}
