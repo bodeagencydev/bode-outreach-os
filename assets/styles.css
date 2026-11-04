@@ -767,3 +767,14 @@ img, video, canvas, svg, iframe {
   .callout { padding: 24px 18px; }
   .footer-links { flex-wrap: wrap; gap: 12px 16px; }
 }
+
+/* Homepage showreel hero */
+.hero-showreel{min-height:590px;background:#08090b;border:1px solid #34383f;isolation:isolate;box-shadow:0 28px 90px #0008}
+.hero-showreel-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:-2}
+.showreel-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#050608a8 0%,transparent 30%,#05060820 45%,#050608ee 100%),linear-gradient(90deg,#05060899,transparent 85%)}
+.showreel-top,.showreel-bottom{position:absolute;left:25px;right:25px;display:flex;justify-content:space-between;gap:12px;color:#f1f2eb;font:700 .62rem 'Sora';letter-spacing:.14em}
+.showreel-top{top:24px}.showreel-top span:last-child{color:var(--lime)}.showreel-top i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--lime);margin-right:7px;box-shadow:0 0 14px var(--lime)}
+.showreel-copy{position:absolute;left:7%;top:27%;max-width:90%}.showreel-copy>span{display:block;color:var(--lime);font:700 .65rem 'Sora';letter-spacing:.2em;margin-bottom:15px}.showreel-copy strong{display:block;font:700 clamp(2.5rem,5.2vw,4.9rem)/.91 'Sora';letter-spacing:-.075em;text-shadow:0 5px 30px #0009}.showreel-copy em{font-style:normal;color:var(--lime)}
+.showreel-bottom{bottom:25px;align-items:end;color:#e2e4dc}.showreel-bottom a{color:var(--lime);white-space:nowrap}.showreel-index{position:absolute;right:25px;top:50%;font:700 .75rem 'Sora';color:var(--lime);writing-mode:vertical-rl}.showreel-index span{color:#ffffff88}
+@media(max-width:900px){.hero-showreel{min-height:520px}}
+@media(max-width:680px){.hero-showreel{min-height:500px;border-radius:22px}.showreel-copy{left:6%;top:32%}.showreel-copy strong{font-size:clamp(2.55rem,11vw,4rem)}.showreel-top,.showreel-bottom{left:16px;right:16px}.showreel-top{top:17px;font-size:.52rem}.showreel-bottom{bottom:17px;align-items:flex-start;flex-direction:column;font-size:.55rem}.showreel-index{right:15px}.hero-showreel-video{object-position:55% center}}
